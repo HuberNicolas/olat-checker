@@ -2,33 +2,34 @@ import datetime
 import time
 import requests
 
-
-
-
-def getOlat():
-    f = open("Log.txt", "a")
+def getOlat(name):
+    f = open(name, "a")
     now = datetime.datetime.now()
 
     url = "https://lms.uzh.ch/dmz/"
     req = requests.get(url)
     # find "People"
-    indexPeople = req.text.index("People")
+    indexStudents = req.text.index("People")
     i = 0
     # find "("
-    while req.text[indexPeople - i] != "(":
+    while req.text[indexStudents - i] != "(":
         i += 1
-    # print(req.text[indexPeople-i])
-    filter = req.text[indexPeople - i + 1:indexPeople]
-    people = int(filter)
+    # print(req.text[indexStudents-i])
+    filter = req.text[indexStudents - i + 1:indexStudents]
+    students = int(filter)
 
-
-    f.write(now.strftime("%Y-%m-%d %H:%M:%S"+ ": "+ str(people) + "\n"))
+    f.write(now.strftime("%Y-%m-%d %H:%M:%S" + ": " + str(students) + "\n"))
     f.close()
 
-def main():
-    while True:
-        getOlat()
-        time.sleep(2)
 
+def main():
+    # generate new logfile
+    logdate = datetime.datetime.now()
+    nameOfLogFile = str(logdate.strftime("%Y-%m-%d")) + ".txt"
+    # write new logfile
+    logfile = open(nameOfLogFile, "w+")
+    while True:
+        getOlat(nameOfLogFile)
+        time.sleep(60)
 if __name__ == "__main__":
     main()
